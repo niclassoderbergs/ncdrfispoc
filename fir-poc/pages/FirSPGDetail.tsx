@@ -51,7 +51,8 @@ const styles = {
   },
   navButton: {
     display: 'flex',
-    alignItems: 'center gap: 6px',
+    alignItems: 'center',
+    gap: '6px',
     padding: '6px 12px',
     backgroundColor: '#fff',
     border: '1px solid #dfe1e6',
@@ -213,7 +214,7 @@ export const FirSPGDetail: React.FC<Props> = ({ id, prevSpg, nextSpg, onSelectSP
                 </div>
                 <div style={{color: '#5e6c84', display: 'flex', gap: '16px', fontSize: '0.9rem'}}>
                     <span style={{display: 'flex', alignItems: 'center', gap: '6px'}}><Users size={16}/> {spg.fsp}</span>
-                    <span style={{display: 'flex', alignItems: 'center', gap: '6px'}}>📍 {spg.zone}</span>
+                    <span style={{display: 'flex', alignItems: 'center', gap: '6px'}}><MapPin size={16}/> {spg.zone}</span>
                     <span style={{display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, color: spg.marketType === 'TSO' ? '#0052cc' : '#4a148c'}}>
                         {/* Globe and TowerControl are now imported */}
                         {spg.marketType === 'TSO' ? <Globe size={16}/> : <TowerControl size={16}/>}
@@ -437,3 +438,4 @@ export const FirSPGDetail: React.FC<Props> = ({ id, prevSpg, nextSpg, onSelectSP
     </div>
   );
 };
+

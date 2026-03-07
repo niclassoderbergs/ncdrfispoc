@@ -154,7 +154,8 @@ const styles = {
     fontWeight: 700,
     color: '#172b4d',
     display: 'flex',
-    alignItems: 'center gap: 8px'
+    alignItems: 'center',
+    gap: '8px'
   },
   rankIcon: {
     width: '24px',
@@ -597,3 +598,4 @@ export const FirProductDetail: React.FC<Props> = ({ productId, prevProduct, next
     </div>
   );
 };
+

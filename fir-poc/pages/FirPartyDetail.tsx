@@ -40,7 +40,8 @@ const styles = {
   },
   navButton: {
     display: 'flex',
-    alignItems: 'center gap: 6px',
+    alignItems: 'center',
+    gap: '6px',
     padding: '6px 12px',
     backgroundColor: '#fff',
     border: '1px solid #dfe1e6',
@@ -179,3 +180,4 @@ export const FirPartyDetail: React.FC<Props> = ({ partyName, prevParty, nextPart
     </div>
   );
 };
+

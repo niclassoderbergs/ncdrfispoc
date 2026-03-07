@@ -61,6 +61,21 @@ interface NavigationState {
     localMarketId: string | null;
 }
 
+const getAdjacentItems = <T,>(
+  items: T[],
+  selectedId: string | null,
+  getId: (item: T) => string
+): { prev: T | null; next: T | null } => {
+  if (!selectedId) return { prev: null, next: null };
+  const index = items.findIndex(item => getId(item) === selectedId);
+  if (index < 0) return { prev: null, next: null };
+
+  return {
+    prev: index > 0 ? items[index - 1] : null,
+    next: index < items.length - 1 ? items[index + 1] : null
+  };
+};
+
 export const FirGuiPocPage: React.FC = () => {
   const [currentView, setCurrentView] = useState<PocView>('dashboard'); 
   const [selectedCU, setSelectedCU] = useState<CU | null>(null); 
@@ -162,6 +177,64 @@ export const FirGuiPocPage: React.FC = () => {
     setCurrentView('local_market_detail');
   }, [pushHistory]);
 
+  const sortedCUs = useMemo(() => [...mockCUs].sort((a, b) => a.id.localeCompare(b.id)), []);
+  const sortedSPGs = useMemo(() => [...mockSPGs].sort((a, b) => a.id.localeCompare(b.id)), []);
+  const sortedProducts = useMemo(() => [...svkProducts].sort((a, b) => a.id.localeCompare(b.id)), []);
+  const sortedConstraints = useMemo(() => [...mockGridConstraints].sort((a, b) => a.id.localeCompare(b.id)), []);
+
+  const partyNamesForView = useMemo(() => {
+    const uniqueSorted = (names: string[]) => [...new Set(names)].sort((a, b) => a.localeCompare(b));
+
+    switch (currentView) {
+      case 'dsos':
+        return uniqueSorted(mockDSOs.map(d => d.name));
+      case 'res':
+        return uniqueSorted(mockREs.map(r => r.name));
+      case 'brps':
+        return uniqueSorted(mockBRPs.map(b => b.name));
+      case 'bsp':
+        return uniqueSorted(mockBSPs.map(b => b.name));
+      case 'sp':
+        return uniqueSorted(mockSPs.map(s => s.name));
+      case 'reg_responsible':
+        return uniqueSorted(mockRegResponsibles.map(r => r.name));
+      default:
+        return uniqueSorted([
+          ...mockDSOs.map(d => d.name),
+          ...mockREs.map(r => r.name),
+          ...mockBRPs.map(b => b.name),
+          ...mockBSPs.map(b => b.name),
+          ...mockSPs.map(s => s.name),
+          ...mockRegResponsibles.map(r => r.name),
+          ...mockCUs.map(c => c.registrationResponsible)
+        ]);
+    }
+  }, [currentView]);
+
+  const cuAdjacency = useMemo(
+    () => getAdjacentItems(sortedCUs, selectedCU?.id ?? null, cu => cu.id),
+    [sortedCUs, selectedCU]
+  );
+  const spgAdjacency = useMemo(
+    () => getAdjacentItems(sortedSPGs, selectedSpgId, spg => spg.id),
+    [sortedSPGs, selectedSpgId]
+  );
+  const productAdjacency = useMemo(
+    () => getAdjacentItems(sortedProducts, selectedProductId, product => product.id),
+    [sortedProducts, selectedProductId]
+  );
+  const constraintAdjacency = useMemo(
+    () => getAdjacentItems(sortedConstraints, selectedConstraintId, constraint => constraint.id),
+    [sortedConstraints, selectedConstraintId]
+  );
+
+  const selectedPartyIndex = selectedPartyName ? partyNamesForView.indexOf(selectedPartyName) : -1;
+  const prevPartyName = selectedPartyIndex > 0 ? partyNamesForView[selectedPartyIndex - 1] : null;
+  const nextPartyName =
+    selectedPartyIndex >= 0 && selectedPartyIndex < partyNamesForView.length - 1
+      ? partyNamesForView[selectedPartyIndex + 1]
+      : null;
+
   // --- RENDERING ---
   const renderContent = () => {
     // 1. Check Detail views first (if applicable)
@@ -169,19 +242,19 @@ export const FirGuiPocPage: React.FC = () => {
         return <FirLocalMarketDetail id={selectedLocalMarketId} onBack={handleGoBack} />;
     }
     if (selectedCU && currentView === 'cus') {
-        return <FirCUDetail cu={selectedCU} prevCU={null} nextCU={null} onSelectCU={handleSelectCU} onBack={handleGoBack} onNavigateToGroup={handleSelectSPG} onSelectParty={handleSelectParty} onSelectBid={handleSelectBid} />;
+        return <FirCUDetail cu={selectedCU} prevCU={cuAdjacency.prev} nextCU={cuAdjacency.next} onSelectCU={handleSelectCU} onBack={handleGoBack} onNavigateToGroup={handleSelectSPG} onSelectParty={handleSelectParty} onSelectBid={handleSelectBid} />;
     }
     if (selectedSpgId && currentView === 'spgs') {
-        return <FirSPGDetail id={selectedSpgId} prevSpg={null} nextSpg={null} onSelectSPG={handleSelectSPG} onBack={handleGoBack} onSelectCU={handleSelectCU} onSelectBid={handleSelectBid} />;
+        return <FirSPGDetail id={selectedSpgId} prevSpg={spgAdjacency.prev} nextSpg={spgAdjacency.next} onSelectSPG={handleSelectSPG} onBack={handleGoBack} onSelectCU={handleSelectCU} onSelectBid={handleSelectBid} />;
     }
     if (selectedPartyName && ['parties', 'overview', 'bsp', 'sp', 'dsos', 'res', 'brps', 'reg_responsible'].includes(currentView)) {
-        return <FirPartyDetail partyName={selectedPartyName} prevParty={null} nextParty={null} onSelectParty={handleSelectParty} onBack={handleGoBack} onSelectCU={handleSelectCU} onSelectSPG={handleSelectSPG} />;
+        return <FirPartyDetail partyName={selectedPartyName} prevParty={prevPartyName} nextParty={nextPartyName} onSelectParty={handleSelectParty} onBack={handleGoBack} onSelectCU={handleSelectCU} onSelectSPG={handleSelectSPG} />;
     }
     if (selectedProductId && currentView === 'prod_types') {
-        return <FirProductDetail productId={selectedProductId} prevProduct={null} nextProduct={null} onSelectProduct={handleSelectProduct} onBack={handleGoBack} onNavigateToGroup={handleSelectSPG} onSelectParty={handleSelectParty} onSelectBid={handleSelectBid} />;
+        return <FirProductDetail productId={selectedProductId} prevProduct={productAdjacency.prev} nextProduct={productAdjacency.next} onSelectProduct={handleSelectProduct} onBack={handleGoBack} onNavigateToGroup={handleSelectSPG} onSelectParty={handleSelectParty} onSelectBid={handleSelectBid} />;
     }
     if (selectedConstraintId && currentView === 'grid_constraint_detail') {
-        return <FirGridConstraintDetail id={selectedConstraintId} prevConstraint={null} nextConstraint={null} onSelectConstraint={handleSelectConstraint} onBack={handleGoBack} onSelectCU={handleSelectCU} onSelectSPG={handleSelectSPG} />;
+        return <FirGridConstraintDetail id={selectedConstraintId} prevConstraint={constraintAdjacency.prev} nextConstraint={constraintAdjacency.next} onSelectConstraint={handleSelectConstraint} onBack={handleGoBack} onSelectCU={handleSelectCU} onSelectSPG={handleSelectSPG} />;
     }
     if (selectedBidId && currentView === 'verification') {
         return <FirVerificationDetail bidId={selectedBidId} onBack={handleGoBack} onSelectCU={handleSelectCU} onSelectSPG={handleSelectSPG} onSelectBid={handleSelectBid} />;
@@ -280,3 +353,4 @@ export const FirGuiPocPage: React.FC = () => {
     </div>
   );
 };
+

@@ -27,7 +27,7 @@ import {
   mockCUs, 
   mockSPGs, 
   mockGridConstraints, 
-  mockBSPs, 
+  mockSPs, 
   mockSPGProductApplications, 
   mockSPApplications,
   svkProducts,
@@ -149,7 +149,7 @@ export const FirDashboard: React.FC<Props> = ({ onNavigate }) => {
             totalMWNum,
             totalMW: totalMWNum.toFixed(1),
             cuCount: mockCUs.length.toLocaleString(),
-            spBspCount: mockBSPs.length,
+            spCount: mockSPs.length,
             regResponsibleCount: mockRegResponsibles.length,
             activeConstraintsCount: currentConstraints.length,
             productCount: svkProducts.length,
@@ -340,7 +340,7 @@ export const FirDashboard: React.FC<Props> = ({ onNavigate }) => {
                 />
                 <StatCard 
                     title="Registered SP" 
-                    value={stats.spBspCount} 
+                    value={stats.spCount} 
                     subValue="Market authorized actors"
                     icon={Briefcase} 
                     color="#4a148c" 
@@ -634,3 +634,6 @@ const styles = {
         marginBottom: '12px'
     }
 };
+
+
+
