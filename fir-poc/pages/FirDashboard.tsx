@@ -301,7 +301,7 @@ export const FirDashboard: React.FC<Props> = ({ onNavigate }) => {
 
                 <div style={{ marginTop: '24px', borderTop: '1px solid #ebecf0', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                        Created by: <strong>Niclas Söderberg</strong> (niclas.soderberg@svk.se)
+                        Created by: <strong>Niclas Söderberg</strong> (niclas@konvene.se)
                     </div>
                     <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0052cc', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <Terminal size={14} /> POC VERSION 1.4.2
@@ -666,6 +666,7 @@ const styles = {
         marginBottom: '12px'
     }
 };
+
 
 
 
