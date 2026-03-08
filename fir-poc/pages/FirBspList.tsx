@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, Briefcase, Globe, Info, ChevronLeft, ChevronRight, TowerControl, Zap, UserPlus, ShieldCheck } from 'lucide-react';
+import { Search, Filter, Briefcase, Globe, Info, ChevronLeft, ChevronRight, TowerControl, Zap, UserPlus, ShieldCheck, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockBSPs, mockSPs, mockDSOs, mockREs, mockBRPs, mockRegResponsibles } from '../mockData';
 
 const PAGE_SIZE = 20;
@@ -13,6 +13,7 @@ interface Props {
 export const FirBspList: React.FC<Props> = ({ onSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     const processedBSPs = useMemo(() => {
         return mockBSPs.map(bsp => {
@@ -55,6 +56,39 @@ export const FirBspList: React.FC<Props> = ({ onSelect }) => {
                 </div>
             </div>
 
+
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '6px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page is a filtered subset of <strong>Global Parties Overview</strong> and shows only actors that have the <strong>Balance Service Provider (BSP)</strong> role.</div>
+                        <div><strong>Actor Name:</strong> Legal entity name. Click the name to open party details.</div>
+                        <div><strong>Identified Roles:</strong> All detected roles for the same actor.</div>
+                        <div><strong>Code (Ediel):</strong> BSP market identifier used for balancing market interaction.</div>
+                        <div><strong>Country:</strong> Registered country for the actor.</div>
+                        <div><strong>Status:</strong> Current status in the party registry.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -153,3 +187,4 @@ export const FirBspList: React.FC<Props> = ({ onSelect }) => {
         </div>
     );
 };
+

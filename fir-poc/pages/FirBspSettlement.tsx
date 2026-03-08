@@ -1,12 +1,15 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { pocStyles } from '../styles';
 import { 
   FileBarChart, 
   Briefcase, 
   Download, 
   Info,
-  Calendar
+  Calendar,
+  FileText,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { mockBids, POC_NOW } from '../mockData';
 import { isMissingMeterValues } from './FirVerificationList';
@@ -30,6 +33,7 @@ const getSeededDeliveryFactor = (id: string) => {
 };
 
 export const FirBspSettlement: React.FC<Props> = ({ onSelectBid, onSelectParty }) => {
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
     const displayDate = useMemo(() => {
         const targetDate = new Date(POC_NOW);
         targetDate.setUTCDate(POC_NOW.getUTCDate() - 2);
@@ -87,6 +91,38 @@ export const FirBspSettlement: React.FC<Props> = ({ onSelectBid, onSelectParty }
 
     return (
         <div style={pocStyles.content}>
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This view aggregates verified TSO settlement results per Balance Service Provider (BSP).</div>
+                        <div><strong>Balance Service Provider:</strong> The BSP receiving settlement for verified delivery.</div>
+                        <div><strong>Activations:</strong> Number of verified activated bids included for the BSP.</div>
+                        <div><strong>Total Verified Power (MW):</strong> Summed verified delivered power.</div>
+                        <div><strong>Total Verified Energy (MWh):</strong> Summed verified energy for settlement.</div>
+                        <div><strong>Avg. Accuracy (%):</strong> Average delivery precision versus bid volume.</div>
+                    </div>
+                )}
+            </div>
             <div style={{backgroundColor: '#e3fcef', borderLeft: '4px solid #006644', padding: '24px 32px', borderRadius: '8px', marginBottom: '32px', boxShadow: '0 4px 12px rgba(0, 102, 68, 0.05)'}}>
                 <div style={{display:'flex', alignItems:'center', gap:'12px', marginBottom:'12px'}}>
                     <div style={{backgroundColor: '#006644', padding: '6px', borderRadius: '6px', color: 'white'}}>
@@ -174,3 +210,5 @@ export const FirBspSettlement: React.FC<Props> = ({ onSelectBid, onSelectParty }
         </div>
     );
 };
+
+

@@ -8,7 +8,10 @@ import {
   Info,
   Calendar,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  FileText,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { mockBids, mockCUs, POC_NOW } from '../mockData';
 import { isMissingMeterValues } from './FirVerificationList';
@@ -46,6 +49,7 @@ const getSeededDeliveryFactor = (id: string) => {
 
 export const FirBrpSettlement: React.FC<Props> = ({ onSelectBid, onSelectParty }) => {
     const [currentPage, setCurrentPage] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     const displayDate = useMemo(() => {
         const targetDate = new Date(POC_NOW);
@@ -97,6 +101,37 @@ export const FirBrpSettlement: React.FC<Props> = ({ onSelectBid, onSelectParty }
 
     return (
         <div style={pocStyles.content}>
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page provides an overview of the volumes required for imbalance adjustment (neutralization) for Balance Responsible Parties (BRPs).</div>
+                        <div><strong>Balance Responsible Party:</strong> The party that carries financial responsibility for balance within its area.</div>
+                        <div><strong>Total Imbalancement adjustment volume (MWh):</strong> The volume used to adjust the BRP's balance so they are not economically impacted by flexibility activations performed by other actors within their balance responsibility area.</div>
+                        <div><strong>Affected Resources:</strong> The number of technical units (CUs) within the BRP area that contributed to the total volume.</div>
+                        <div><strong>Calculation basis:</strong> Neutralization is calculated per individual resource by comparing baseline and actual metering values during the activation period.</div>
+                    </div>
+                )}
+            </div>
             <div style={{backgroundColor: '#eae6ff', borderLeft: '4px solid #403294', padding: '24px 32px', borderRadius: '8px', marginBottom: '32px', boxShadow: '0 4px 12px rgba(64, 50, 148, 0.05)'}}>
                 <div style={{display:'flex', alignItems:'center', gap:'12px', marginBottom:'12px'}}>
                     <div style={{backgroundColor: '#403294', padding: '6px', borderRadius: '6px', color: 'white'}}>
@@ -124,7 +159,7 @@ export const FirBrpSettlement: React.FC<Props> = ({ onSelectBid, onSelectParty }
                         <tr>
                             <th style={pocStyles.th}>Balance Responsible Party</th>
                             <th style={{...pocStyles.th, textAlign: 'center'}}>Affected Resources</th>
-                            <th style={{...pocStyles.th, textAlign: 'right'}}>Total Neutralization Volume (MWh)</th>
+                            <th style={{...pocStyles.th, textAlign: 'right'}}>Total Imbalancement adjustment volume (MWh)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -199,3 +234,5 @@ export const FirBrpSettlement: React.FC<Props> = ({ onSelectBid, onSelectParty }
         </div>
     );
 };
+
+

@@ -12,7 +12,10 @@ import {
   FileSearch,
   ChevronLeft,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  FileText,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { mockBids, POC_NOW } from '../mockData';
 
@@ -82,6 +85,7 @@ interface Props {
 
 export const FirVerificationList: React.FC<Props> = ({ onSelectBid, onSelectSPG, onSelectParty }) => {
     const [currentPage, setCurrentPage] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     // Filter logic: Only show bids from TWO days ago (D-2)
     const filteredBids = useMemo(() => {
@@ -127,17 +131,47 @@ export const FirVerificationList: React.FC<Props> = ({ onSelectBid, onSelectSPG,
 
     return (
         <div style={pocStyles.content}>
-            <div style={{backgroundColor: '#f3f0ff', borderLeft: '4px solid #403294', padding: '16px 20px', borderRadius: '4px', marginBottom: '32px'}}>
-                <div style={{display:'flex', alignItems:'center', gap:'12px', marginBottom:'8px'}}>
-                    <CheckCircle2 size={20} color="#403294" />
-                    <strong style={{color: '#403294'}}>Settlement Verification (Ex-post) — Final Results for {displayDate}</strong>
-                </div>
-                <p style={{margin: 0, fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.5'}}>
-                    Verifiering av levererad flexibilitet mot baselines. För att säkerställa högsta datakvalitet och att mätvärdesfönstret passerats för samtliga aktörer visar denna vy bud från <strong>D-2 ({displayDate})</strong>. 
-                    Bud markerade med <span style={{color: '#bf2600', fontWeight: 600}}>MISSING METER VALUES</span> saknar fullständigt underlag och exkluderas från de summerade totalerna.
-                </p>
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This view shows the verification status of delivered flexibility against baselines. To ensure high data quality and that the metering window has passed for all actors, this page shows bids from D-2 (two days back in time).</div>
+                        <div><strong>Columns in the table:</strong></div>
+                        <div><strong>Bid Reference:</strong> Unique bid ID. Click to open detailed verification.</div>
+                        <div><strong>Portfolio (SPG):</strong> The bidding group and related BSP.</div>
+                        <div><strong>Product:</strong> Activated market product for the bid.</div>
+                        <div><strong>Period:</strong> Delivery date and MTU period.</div>
+                        <div><strong>Bid (MW):</strong> Submitted bid volume.</div>
+                        <div><strong>Verified (MW):</strong> Verified delivered power (shown only when status is Verified).</div>
+                        <div><strong>Energy (MWh):</strong> Verified energy used for imbalance adjustment and compensation.</div>
+                        <div><strong>Status:</strong> Current verification state for the bid.</div>
+                        <div><strong>Verification status:</strong></div>
+                        <div><strong>Verified:</strong> The metering window has passed (6 hours after delivery), data has been processed, and delivered volume is finalized.</div>
+                        <div><strong>Awaiting Meter Values:</strong> Delivery has occurred, but the 6-hour metering collection window has not yet passed.</div>
+                        <div><strong>Missing Meter Values:</strong> The bid is missing complete metering data from one or more resources. These bids are excluded from aggregated totals.</div>
+                        <div><strong>Accuracy:</strong> Delivery precision vs bid in percent (Green: &gt;98%, Yellow: 90-98%, Red: &lt;90%).</div>
+                    </div>
+                )}
             </div>
-
             <div style={{...pocStyles.section, padding: 0, overflow: 'hidden'}}>
                 <table style={pocStyles.table}>
                     <thead style={{backgroundColor: '#fafbfc'}}>
@@ -302,3 +336,5 @@ export const FirVerificationList: React.FC<Props> = ({ onSelectBid, onSelectSPG,
         </div>
     );
 };
+
+

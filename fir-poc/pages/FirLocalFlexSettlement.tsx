@@ -10,7 +10,10 @@ import {
   TowerControl,
   TrendingUp,
   MapPin,
-  CheckCircle2
+  CheckCircle2,
+  FileText,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { mockBids, mockLocalMarkets, svkProducts, POC_NOW } from '../mockData';
 import { isMissingMeterValues } from './FirVerificationList';
@@ -35,6 +38,7 @@ const getSeededDeliveryFactor = (id: string) => {
 
 export const FirLocalFlexSettlement: React.FC<Props> = ({ onSelectBid, onSelectParty }) => {
     const [selectedMarketId, setSelectedMarketId] = useState(mockLocalMarkets[0].id);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     const displayDate = useMemo(() => {
         const targetDate = new Date(POC_NOW);
@@ -100,6 +104,40 @@ export const FirLocalFlexSettlement: React.FC<Props> = ({ onSelectBid, onSelectP
 
     return (
         <div style={pocStyles.content}>
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This view shows local flexibility settlement statistics for the selected local market.</div>
+                        <div><strong>Columns in the table:</strong></div>
+                        <div><strong>Service Provider:</strong> The provider/aggregator that delivered flexibility.</div>
+                        <div><strong>Local Activations:</strong> Number of verified local activations included for the provider.</div>
+                        <div><strong>Verified Power (MW):</strong> Summed verified delivered power for local activations.</div>
+                        <div><strong>Verified Energy (MWh):</strong> Summed verified energy used for informational settlement reporting.</div>
+                        <div><strong>Avg. Precision (%):</strong> Average delivery precision versus awarded local activations.</div>
+                        <div><strong>Context cards above:</strong> Market Precision and LFM Operator summarize the currently selected market view.</div>
+                    </div>
+                )}
+            </div>
             <div style={{backgroundColor: '#f9f8ff', borderLeft: '4px solid #4a148c', padding: '24px 32px', borderRadius: '8px', marginBottom: '32px', boxShadow: '0 4px 12px rgba(74, 20, 140, 0.05)'}}>
                 <div style={{display:'flex', alignItems:'center', gap:'12px', marginBottom:'12px'}}>
                     <div style={{backgroundColor: '#4a148c', padding: '6px', borderRadius: '6px', color: 'white'}}>
@@ -110,7 +148,7 @@ export const FirLocalFlexSettlement: React.FC<Props> = ({ onSelectBid, onSelectP
                 <p style={{margin: 0, fontSize: '1rem', color: '#334155', lineHeight: '1.6'}}>
                     Verified delivery statistics for <strong>Local Flexibility Markets (LFM)</strong>. Unlike TSO balancing, DSO-level verification is currently provided for 
                     <strong> informational purposes</strong> to support bilateral clearing, technical monitoring, and local grid management. 
-                    Calculations are performed at D-2 based on finalized FIR Domain 6 quantification.
+                    Calculations are performed at D-2 based on finalized FIS Domain 6 quantification.
                 </p>
             </div>
 
@@ -224,10 +262,13 @@ export const FirLocalFlexSettlement: React.FC<Props> = ({ onSelectBid, onSelectP
                 <div>
                     <h4 style={{margin: '0 0 4px 0', color: '#0052cc', fontWeight: 700}}>Reporting & Transparency</h4>
                     <p style={{margin: 0, fontSize: '0.85rem', color: '#0747a6', lineHeight: '1.5'}}>
-                        DSOs access this data via the <strong>LFM API</strong> to evaluate provider performance. FIR acts as an independent verifier, ensuring that baselines and quantities are calculated identically across all markets in Sweden.
+                        DSOs access this data via the <strong>LFM API</strong> to evaluate provider performance. FIS acts as an independent verifier, ensuring that baselines and quantities are calculated identically across all markets in Sweden.
                     </p>
                 </div>
             </div>
         </div>
     );
 };
+
+
+

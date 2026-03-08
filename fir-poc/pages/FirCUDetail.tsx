@@ -352,8 +352,9 @@ const getNormalDistributedFactor = (seed: string) => {
 };
 
 export const FirCUDetail: React.FC<Props> = ({ cu, prevCU, nextCU, onSelectCU, onBack, onNavigateToGroup, onSelectParty, onSelectBid }) => {
-  const [historyExpanded, setHistoryExpanded] = useState(false);
+  const [historyExpanded, setHistoryExpanded] = useState(true);
   const [verificationPage, setVerificationPage] = useState(0);
+  const [isHowToExpanded, setIsHowToExpanded] = useState(false);
   
   const currentTsoSpg = mockSPGs.find(s => s.id === cu.spgId);
   const currentLocalSpg = mockSPGs.find(s => s.id === cu.localSpgId);
@@ -548,6 +549,45 @@ export const FirCUDetail: React.FC<Props> = ({ cu, prevCU, nextCU, onSelectCU, o
                 <button style={{...pocStyles.actionButton, backgroundColor: '#fff', color: '#42526e', border: '1px solid #dfe1e6'}}>Edit Unit</button>
                 <button style={{...pocStyles.actionButton, backgroundColor: '#0052cc'}}>Action</button>
              </div>
+        </div>
+        <div style={{...pocStyles.section, backgroundColor: '#f8fafd'}}>
+            <button
+                type="button"
+                onClick={() => setIsHowToExpanded(prev => !prev)}
+                style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer'
+                }}
+            >
+                <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                    <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                    How To Read This Page
+                </h3>
+                {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+            </button>
+            {isHowToExpanded && (
+                <div style={{display: 'grid', gap: '10px', fontSize: '0.88rem', color: '#172b4d', lineHeight: '1.55', marginTop: '16px'}}>
+                    
+                    <div>This page provides a complete 360-degree view of a specific technical resource (CU). The information is divided into eight main sections that cover everything from real-time constraints to historical settlement data.</div>
+                    <div><strong>Sections on this page:</strong></div>
+                    <div><strong>Operational Alerts & Current Constraints:</strong> Shows active or planned grid constraints registered by the grid owner (DSO). Here you see specific max limits (MW) and time periods that affect the resource's ability to deliver flexibility.</div>
+                    <div><strong>Overview:</strong> A quick status view showing whether the resource has an active flexibility agreement, is grid-approved (Grid Qualification), and which portfolios (SPG) it belongs to for both the TSO and DSO markets.</div>
+                    <div><strong>Market Product Qualifications:</strong> Lists the ancillary services the resource is qualified for. The page separates TSO Balancing Products (for example, mFRR, FCR) and DSO Local Products. The status shows whether the resource is ready ("Ready") or if configuration is missing.</div>
+                    <div><strong>Relationships & Business Agreements:</strong> Splits responsibilities into two parts:</div>
+                    <div><strong>DHV Relations:</strong> Technical relationships from Datahub (DSO, Electricity Supplier/RE, and BRP).</div>
+                    <div><strong>Flexibility Relations:</strong> Commercial relationships in FIS (Registration Responsible/CURR and Service Provider/SP). This section also verifies that owner ID (SSN/ORGNR) matches across all parties to ensure correct settlement.</div>
+                    <div><strong>Technical Identity & Base Qualification:</strong> Contains technical specifications such as resource ID, metering point ID (GSRN), and technical properties. It also shows DHV Master Data that is synced automatically to retrieve metering interval, fuse size, and voltage level.</div>
+                    <div><strong>Baseline & Compliance:</strong> Specifies which calculation model (Baseline Method) is used for each qualified product. It also shows whether meter values are retrieved directly from the resource (CU) or from the metering point (MP).</div>
+                    <div><strong>Recent Verifications (Ex-post):</strong> A history of recent activations where this specific CU has participated. It shows the resource's exact share of a bid in MW, delivered energy in MWh, and calculated accuracy.</div>
+                    <div><strong>Relationship History:</strong> A traceable history of how relationships between SP, RE, and BRP have changed over time. This is critical to ensure that financial compensation and imbalance adjustment are assigned to the correct party for each historical point in time.</div>
+                </div>
+            )}
         </div>
 
         {/* 1. OPERATIONAL ALERTS & CURRENT CONSTRAINTS */}
@@ -944,3 +984,7 @@ export const FirCUDetail: React.FC<Props> = ({ cu, prevCU, nextCU, onSelectCU, o
     </div>
   );
 };
+
+
+
+

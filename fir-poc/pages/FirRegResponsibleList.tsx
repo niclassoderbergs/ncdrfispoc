@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, UserPlus, Globe, ChevronLeft, ChevronRight, Box, Settings, Briefcase, Zap, TowerControl, ShieldCheck } from 'lucide-react';
+import { Search, Filter, UserPlus, Globe, ChevronLeft, ChevronRight, Box, Settings, Briefcase, Zap, TowerControl, ShieldCheck, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockRegResponsibles, mockSPs, mockBSPs, mockDSOs, mockREs, mockBRPs, mockCUs } from '../mockData';
 
 const PAGE_SIZE = 20;
@@ -13,6 +13,7 @@ interface Props {
 export const FirRegResponsibleList: React.FC<Props> = ({ onSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     const processedList = useMemo(() => {
         return mockRegResponsibles.map(reg => {
@@ -54,10 +55,44 @@ export const FirRegResponsibleList: React.FC<Props> = ({ onSelect }) => {
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
                 <div>
                     <h1 style={{...pocStyles.pageTitle, marginBottom: '8px'}}>CU Registration Responsibles</h1>
-                    <p style={{color: '#6b778c', fontSize: '0.9rem'}}>Central registry of entities authorized to technically onboard resources into the FIR.</p>
+                    <p style={{color: '#6b778c', fontSize: '0.9rem'}}>Central registry of entities authorized to technically onboard resources into the FIS.</p>
                 </div>
             </div>
 
+
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '6px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page is a filtered subset of <strong>Global Parties Overview</strong> and shows only actors that have the <strong>CU Registration Responsible (CURR)</strong> role.</div>
+                        <div><strong>Entity Name:</strong> Legal entity name. Click the name to open party details.</div>
+                        <div><strong>Identified Roles:</strong> All detected roles for the same actor.</div>
+                        <div><strong>CUs Registered:</strong> Number of Controllable Units technically registered by the actor.</div>
+                        <div><strong>ID Code:</strong> Actor identifier used in registry and integrations.</div>
+                        <div><strong>Country:</strong> Registered country for the actor.</div>
+                        <div><strong>Status:</strong> Current authorization status in the registry.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -162,3 +197,5 @@ export const FirRegResponsibleList: React.FC<Props> = ({ onSelect }) => {
         </div>
     );
 };
+
+

@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, Plus, Activity, Zap, CheckCircle2, Link2, Clock, FileX } from 'lucide-react';
+import { Search, Filter, Plus, Activity, Zap, CheckCircle2, Link2, Clock, FileX, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockSPGProductApplications } from '../mockData';
 
 interface Props {
@@ -8,6 +8,7 @@ interface Props {
 }
 
 export const FirSPGProductApplications: React.FC<Props> = ({ onSelectSPG }) => {
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
     
     const ongoingApplications = useMemo(() => 
         mockSPGProductApplications.filter(app => app.status !== 'Approved')
@@ -128,6 +129,46 @@ export const FirSPGProductApplications: React.FC<Props> = ({ onSelectSPG }) => {
                 </button>
             </div>
 
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '6px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page shows the qualification process for Service Provider Groups (SPGs) applying to deliver specific market products.</div>
+                        <div><strong>Process flow in FIS:</strong> The application is sent to the relevant DSO/TSO that the SP/BSP applies to for SPG prequalification. The technical prequalification is then handled directly between the DSO/TSO and the SP/BSP, and the DSO/TSO updates the prequalification status in FIS.</div>
+                        <div><strong>ID:</strong> Unique application reference for the qualification case.</div>
+                        <div><strong>Group (SPG):</strong> Shows the applying SPG. Click the group name to open SPG details.</div>
+                        <div><strong>Product:</strong> The specific product being qualified (for example mFRR or FCR).</div>
+                        <div><strong>Applied:</strong> Date when the product qualification application was submitted.</div>
+                        <div><strong>Phase:</strong> Current qualification status.</div>
+                        <div><strong>Technical Testing / Ready for Activation Test:</strong> Technical verification or activation tests are ongoing to ensure the group can deliver according to requirements.</div>
+                        <div><strong>Approved:</strong> The group is fully qualified for the product.</div>
+                        <div><strong>Rejected:</strong> Qualification failed.</div>
+                        <div><strong>Progress:</strong> Visual indicator (0-100%) showing completion for the current phase.</div>
+                        <div><strong>Action:</strong> Opens the relevant step, for example <strong>Process</strong>, <strong>View Reason</strong>, or <strong>View Certificate</strong>.</div>
+                        <div><strong>Sections:</strong> <strong>Ongoing &amp; Evaluated Qualifications</strong> shows active/non-approved cases. <strong>Historical Approvals</strong> shows approved product qualifications.</div>
+                        <div><strong>System Role:</strong> FIS acts as coordinator for these prequalification workflows.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '32px'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -163,3 +204,9 @@ export const FirSPGProductApplications: React.FC<Props> = ({ onSelectSPG }) => {
         </div>
     );
 };
+
+
+
+
+
+

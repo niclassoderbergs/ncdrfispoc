@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { 
   ChevronRight, 
   Settings, 
@@ -18,6 +18,9 @@ import {
   MapPin, 
   FileBarChart, 
   ChevronLeft,
+  FileText,
+  ChevronDown,
+  ChevronUp,
   // Added missing Globe and TowerControl imports
   Globe,
   TowerControl
@@ -136,6 +139,7 @@ const getSeededDeliveryFactor = (id: string) => {
 };
 
 export const FirSPGDetail: React.FC<Props> = ({ id, prevSpg, nextSpg, onSelectSPG, onBack, onSelectCU, onSelectBid }) => {
+  const [isHowToExpanded, setIsHowToExpanded] = useState(false);
   const spg = mockSPGs.find(s => s.id === id);
   
   // FIX: Look at both spgId and localSpgId to find members
@@ -225,6 +229,41 @@ export const FirSPGDetail: React.FC<Props> = ({ id, prevSpg, nextSpg, onSelectSP
              <button style={{...pocStyles.actionButton, backgroundColor: '#fff', color: '#42526e', border: '1px solid #dfe1e6', display: 'flex', alignItems: 'center', gap: '8px'}}>
                 <Settings size={16} /> Manage Group
              </button>
+        </div>
+        <div style={{...pocStyles.section, backgroundColor: '#f8fafd'}}>
+            <button
+                type="button"
+                onClick={() => setIsHowToExpanded(prev => !prev)}
+                style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer'
+                }}
+            >
+                <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                    <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                    How To Read This Page
+                </h3>
+                {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+            </button>
+            {isHowToExpanded && (
+                <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                    <div>This page contains detailed information about a specific bidding group and its ability to deliver market products. It manages the link between the commercial aggregation level and the underlying technical units.</div>
+                    <div><strong>Sections on this page:</strong></div>
+                    <div><strong>Group Overview:</strong> Summarizes the group's core data, total capacity, and which Service Provider acts as the market-responsible party.</div>
+                    <div><strong>Included Resources (CUs):</strong> A detailed list of the technical resources that make up the group. Here you can see each individual unit's status and how much it contributes to the group's total capacity.</div>
+                    <div><strong>Product Qualifications & Applications:</strong> Shows which specific market products (for example, mFRR, FCR-D, FCR-N) the group is qualified to sell. This section also shows ongoing applications for new product approvals.</div>
+                    <div><strong>Bidding Zone & Grid Constraints:</strong> Identifies which bidding zone the group operates in and whether there are any overarching grid constraints that affect the entire group's ability to submit bids.</div>
+                    <div><strong>Verification Summary:</strong> A summary of the group's historical deliveries and how well the aggregated resources have performed against submitted bids (Accuracy).</div>
+                    <div><strong>Important to note:</strong></div>
+                    <div>An SPG can only participate in the market with products where both the group and the included resources meet baseline-method and technical-verification requirements. If a resource in the group loses grid qualification, it may affect the entire group's available capacity.</div>
+                </div>
+            )}
         </div>
 
         <div style={{display: 'flex', gap: '24px', marginBottom: '32px'}}>

@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { pocStyles } from '../styles';
-import { Gavel, CheckCircle2, AlertTriangle, Link2, Clock, BarChart3, Info, MapPin, Zap, Calendar, TrendingUp, ChevronLeft, ChevronRight, ShieldAlert, Lightbulb, Globe, TowerControl } from 'lucide-react';
+import { Gavel, CheckCircle2, AlertTriangle, Link2, Clock, BarChart3, Info, MapPin, Zap, Calendar, TrendingUp, ChevronLeft, ChevronRight, ShieldAlert, Lightbulb, Globe, TowerControl, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockBids, mockCUs, mockMarketStats, svkProducts } from '../mockData';
 
 const PAGE_SIZE = 20;
@@ -67,6 +67,7 @@ const PRODUCT_DISPLAY_NAMES: Record<string, string> = {
 export const FirBidsReceived: React.FC<Props> = ({ onSelectBid, onSelectSPG, onSelectParty }) => {
     const [pageTso, setPageTso] = useState(0);
     const [pageDso, setPageDso] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
     
     const getSpgTotalCapacity = (spgId: string) => {
         const units = mockCUs.filter(cu => cu.spgId === spgId || cu.localSpgId === spgId);
@@ -93,22 +94,37 @@ export const FirBidsReceived: React.FC<Props> = ({ onSelectBid, onSelectSPG, onS
     , [pageDso, dsoBids]);
 
     const renderBidRows = (bids: any[], isDso: boolean) => (
-        bids.map((bid, idx) => {
-            const portfolioCap = getSpgTotalCapacity(bid.spgId);
-            const isOverbid = bid.volumeMW > portfolioCap;
-            
-            // Artificial demo logic for rejections in first few rows of first page
+                bids.map((bid, idx) => {
+            const baseAvailableMw = typeof bid.availableCapacityMW === 'number'
+                ? bid.availableCapacityMW
+                : getSpgTotalCapacity(bid.spgId);
+
+            // Demo rule: first page always shows at least one invalid per error type.
             const isFirstPage = (isDso ? pageDso : pageTso) === 0;
-            const forceReject = idx < 3 && isFirstPage;
-            const isValid = bid.status === 'Valid' && !isOverbid && !forceReject;
+            const forcedReason = isFirstPage
+                ? (idx === 0
+                    ? "EXCEEDS TECHNICAL CAPACITY"
+                    : idx === 1
+                        ? "GRID CONSTRAINT (AREA RED)"
+                        : idx === 2
+                            ? (isDso ? "CROSS-MARKET CONFLICT (CU ACTIVE IN TSO)" : "CROSS-MARKET CONFLICT (CU ACTIVE IN DSO)")
+                            : null)
+                : null;
+
+            const availableMw = forcedReason === "EXCEEDS TECHNICAL CAPACITY"
+                ? Math.max(0, bid.volumeMW - 0.5)
+                : baseAvailableMw;
+
+            const isOverbid = bid.volumeMW > availableMw;
+            const isValid = bid.status === 'Valid' && !isOverbid && !forcedReason;
             
             let reason = "";
-            if (forceReject) {
-                if (idx === 0) reason = "EXCEEDS TECHNICAL CAPACITY";
-                if (idx === 1) reason = "GRID CONSTRAINT (AREA RED)";
-                if (idx === 2) reason = isDso ? "CROSS-MARKET CONFLICT (CU ACTIVE IN TSO)" : "CROSS-MARKET CONFLICT (CU ACTIVE IN DSO)";
+            if (forcedReason) {
+                reason = forcedReason;
             } else if (isOverbid) {
-                reason = "VOLUME > QUALIFIED MW";
+                reason = "EXCEEDS TECHNICAL CAPACITY";
+            } else if (bid.status !== 'Valid') {
+                reason = "FAILED TECHNICAL VALIDATION";
             }
 
             const dateObj = new Date(bid.timestamp);
@@ -166,7 +182,7 @@ export const FirBidsReceived: React.FC<Props> = ({ onSelectBid, onSelectSPG, onS
                         </div>
                     </td>
                     <td style={{...pocStyles.td, textAlign: 'right'}}>
-                        <span style={{fontWeight: 700, color: '#6b778c'}}>{bid.availableCapacityMW.toFixed(1)} MW</span>
+                        <span style={{fontWeight: 700, color: '#6b778c'}}>{availableMw.toFixed(1)} MW</span>
                     </td>
                     <td style={{...pocStyles.td, textAlign: 'right'}}>
                         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end'}}>
@@ -274,16 +290,55 @@ export const FirBidsReceived: React.FC<Props> = ({ onSelectBid, onSelectSPG, onS
 
     return (
         <div style={pocStyles.content}>
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This view shows incoming bids sent from TSO and DSO intake systems to FIS for technical validation.</div>
+                        <div><strong>Columns in the tables:</strong></div>
+                        <div><strong>Bid Reference:</strong> Unique bid ID. Click to open bid details.</div>
+                        <div><strong>Portfolio (SPG):</strong> SPG that submitted the bid, with responsible BSP shown below.</div>
+                        <div><strong>Product:</strong> Product requested in the bid.</div>
+                        <div><strong>Market:</strong> Market domain/operator context (TSO balancing or local/DSO market).</div>
+                        <div><strong>Bid Zone:</strong> Bidding zone linked to the bid.</div>
+                        <div><strong>Period:</strong> Delivery date and MTU period.</div>
+                        <div><strong>Available (MW):</strong> Available qualified portfolio capacity at validation time.</div>
+                        <div><strong>Bid (MW):</strong> Requested bid volume.</div>
+                        <div><strong>Status:</strong> Validation result (VALID/INVALID).</div>
+                        <div><strong>Invalid reasons:</strong> Typical causes are Exceeds Technical Capacity, Grid Constraint, and Cross-Market Conflict.</div>
+                        <div><strong>System role:</strong> Validation results are sent back to TSO/DSO as input for final bid selection.</div>
+                    </div>
+                )}
+            </div>
             <div style={{backgroundColor: '#e6effc', borderLeft: '4px solid #0052cc', padding: '24px 32px', borderRadius: '8px', marginBottom: '40px', boxShadow: '0 4px 12px rgba(0, 82, 204, 0.08)'}}>
                 <div style={{display:'flex', alignItems:'center', gap:'12px', marginBottom:'12px'}}>
                     <div style={{ backgroundColor: '#0052cc', padding: '6px', borderRadius: '6px', color: 'white' }}>
                         <Lightbulb size={20} />
                     </div>
-                    <strong style={{color: '#0747a6', fontSize: '1.1rem'}}>CONCEPT PROPOSAL — BRS-FLEX-7010: Automated Capacity Check</strong>
+                    <strong style={{color: '#0747a6', fontSize: '1.1rem'}}>CONCEPT PROPOSAL - Automated Capacity Check</strong>
                 </div>
                 <p style={{margin: 0, fontSize: '1rem', color: '#172b4d', lineHeight: '1.6'}}>
                     Incoming bids are automatically validated against the <strong>aggregated technical capacity</strong> of the resources (CUs) included in the portfolio. 
-                    The system also cross-references with <strong>BRS-FLEX-401</strong> (Grid Constraints) and identifies <strong>cross-market conflicts</strong> in real-time.
+                    The system also cross-references with <strong>Grid Constraints</strong> and identifies <strong>cross-market conflicts</strong> in real-time.
                 </p>
             </div>
 
@@ -295,3 +350,11 @@ export const FirBidsReceived: React.FC<Props> = ({ onSelectBid, onSelectSPG, onS
         </div>
     );
 };
+
+
+
+
+
+
+
+

@@ -1,7 +1,7 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, Plus, Users, ChevronLeft, ChevronRight, Globe, TowerControl, Layers } from 'lucide-react';
+import { Search, Filter, Plus, Users, ChevronLeft, ChevronRight, Globe, TowerControl, Layers, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockSPGs, mockCUs, mockSPGProductApplications } from '../mockData';
 import { SPG } from '../types';
 
@@ -39,6 +39,7 @@ export const FirSPGList: React.FC<Props> = ({ onSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [tsoPage, setTsoPage] = useState(0);
     const [dsoPage, setDsoPage] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     // Reset pagination when searching
     useEffect(() => {
@@ -198,7 +199,42 @@ export const FirSPGList: React.FC<Props> = ({ onSelect }) => {
                     <Plus size={16} /> New SPG
                 </button>
             </div>
-
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page shows SPGs in two tables: one for TSO portfolios and one for DSO/local portfolios.</div>
+                        <div><strong>Note about SPU:</strong> SPU (Service Provider Unit) is not included in this POC. An SPU corresponds to an SPG in behavior, but contains only one CU.</div>
+                        <div><strong>Columns in each table:</strong></div>
+                        <div><strong>ID:</strong> Unique SPG identifier.</div>
+                        <div><strong>Name:</strong> SPG name.</div>
+                        <div><strong>FSP / BSP:</strong> Owning provider/party shown for the group.</div>
+                        <div><strong>Bidding Zone:</strong> Zone where the SPG can submit bids.</div>
+                        <div><strong>Total Effekt (MW):</strong> Summed available capacity of included units, displayed in MW.</div>
+                        <div><strong>Units:</strong> Number of Controllable Units included in the SPG.</div>
+                        <div><strong>Status:</strong> Group readiness state (for example Active or Qualification Pending).</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '32px'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -244,3 +280,7 @@ export const FirSPGList: React.FC<Props> = ({ onSelect }) => {
         </div>
     );
 };
+
+
+
+

@@ -1,6 +1,6 @@
 
 import { Bid } from '../types';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { pocStyles } from '../styles';
 import { 
   ChevronRight, 
@@ -18,7 +18,10 @@ import {
   AlertCircle,
   Link2,
   Box,
-  AlertTriangle
+  AlertTriangle,
+  FileText,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { mockBids, mockCUs, baselineMethods, POC_NOW } from '../mockData';
 import { isMissingMeterValues } from './FirVerificationList';
@@ -143,6 +146,7 @@ const getNormalDistributedFactor = (seed: string) => {
 };
 
 export const FirVerificationDetail: React.FC<Props> = ({ bidId, onBack, onSelectCU, onSelectSPG, onSelectBid, onPrev, onNext }) => {
+  const [isHowToExpanded, setIsHowToExpanded] = useState(false);
   const bid = useMemo(() => mockBids.find(b => b.id === bidId), [bidId]);
   
   const sortedBids = useMemo(() => {
@@ -303,6 +307,50 @@ export const FirVerificationDetail: React.FC<Props> = ({ bidId, onBack, onSelect
         </button>
       </div>
 
+
+      <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+        <button
+          type="button"
+          onClick={() => setIsHowToExpanded(prev => !prev)}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer'
+          }}
+        >
+          <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+            <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+            How To Read This Page
+          </h3>
+          {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+        </button>
+        {isHowToExpanded && (
+          <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+            <div>This page provides an in-depth view of how one bid was verified by breaking the result down to underlying technical resources (CUs).</div>
+            <div><strong>Sections on this page:</strong></div>
+            <div><strong>Bid Header & Metadata:</strong> Shows bid ID, service provider, SPG, product, and delivery period (MTU).</div>
+            <div><strong>Settlement Stats:</strong> Summarizes Bid Volume (MW), Verified Volume (MW), and Verified Energy (MWh). Verified Energy (MWh) is the settlement basis forwarded to RE and BRP processes.</div>
+            <div><strong>Controllable Units:</strong> Lists all resources included in the bid at delivery time.</div>
+            <div><strong>Columns in the resource table:</strong></div>
+            <div><strong>CU ID / Name / Type / Capacity:</strong> Core technical identity and capacity contribution.</div>
+            <div><strong>Meter Source:</strong> Whether verification uses CU meter values or metering point (MP) values.</div>
+            <div><strong>Baseline Method:</strong> The calculation model used to estimate counterfactual behavior without activation.</div>
+            <div><strong>Meter Value Status:</strong> Per-resource metering data status.</div>
+            <div><strong>Available:</strong> Required metering values are present.</div>
+            <div><strong>Awaiting:</strong> Metering values are expected but not yet available.</div>
+            <div><strong>Missing:</strong> Metering values are missing for the resource.</div>
+            <div><strong>Verified MW / Verified MWh:</strong> Verified delivered power and energy contribution per resource.</div>
+            <div><strong>Affected BRP / Affected RE:</strong> Actor impact per resource based on historical relationships valid at delivery time.</div>
+            <div>If a bid is marked "Missing Meter Values", use this table to identify exactly which resources are missing data and how that impacts the bid's total verified result.</div>
+          </div>
+        )}
+      </div>
+
       <div style={styles.metadataGrid}>
         <div style={styles.metaItem}>
           <span style={styles.metaLabel}>Service Provider</span>
@@ -371,7 +419,7 @@ export const FirVerificationDetail: React.FC<Props> = ({ bidId, onBack, onSelect
 
       <div style={pocStyles.section}>
         <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'16px'}}>
-            <h3 style={{...pocStyles.sectionTitle, borderBottom: 'none', marginBottom: 0}}>Constituent Resources (Controllable Units)</h3>
+            <h3 style={{...pocStyles.sectionTitle, borderBottom: 'none', marginBottom: 0}}>Controllable Units</h3>
             <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
                 {hasMissingValues && (
                     <div style={{display:'flex', alignItems:'center', gap:'6px', fontSize:'0.85rem', color:'#bf2600', backgroundColor: '#ffebe6', padding: '4px 12px', borderRadius: '4px', fontWeight: 600}}>
@@ -516,3 +564,6 @@ export const FirVerificationDetail: React.FC<Props> = ({ bidId, onBack, onSelect
     </div>
   );
 };
+
+
+

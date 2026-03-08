@@ -15,7 +15,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Globe,
-  TowerControl
+  TowerControl,
+  FileText,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { mockBids, svkProducts } from '../mockData';
 
@@ -78,6 +81,7 @@ const getActivationBadge = (status: string) => {
 export const FirBidsActivated: React.FC<Props> = ({ onSelectBid, onSelectSPG, onSelectParty }) => {
     const [pageActivated, setPageActivated] = useState(0);
     const [pageScheduled, setPageScheduled] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     const marketSelectedBids = useMemo(() => 
         mockBids.filter(b => b.selectionStatus === 'Selected' && b.status === 'Valid')
@@ -246,6 +250,47 @@ export const FirBidsActivated: React.FC<Props> = ({ onSelectBid, onSelectSPG, on
 
     return (
         <div style={pocStyles.content}>
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page tracks bids selected by TSO or DSO for delivery.</div>
+                        <div><strong>Sections and status:</strong></div>
+                        <div><strong>Scheduled (Future):</strong> Accepted for future delivery.</div>
+                        <div><strong>Activated (Confirmed):</strong> Delivery confirmed and activated.</div>
+                        <div><strong>Not Activated (Reserves):</strong> Selected as reserve but never called.</div>
+                        <div><strong>Columns in the tables:</strong></div>
+                        <div><strong>Bid Reference:</strong> Unique bid ID. Click to open bid details.</div>
+                        <div><strong>Portfolio (SPG):</strong> SPG that provided the bid, with BSP shown below.</div>
+                        <div><strong>Product:</strong> Activated product.</div>
+                        <div><strong>Market / Operator:</strong> Market domain and operator.</div>
+                        <div><strong>Bid Zone:</strong> Bidding zone for the bid.</div>
+                        <div><strong>Delivery Period:</strong> Delivery date and MTU period.</div>
+                        <div><strong>Awarded Vol (MW):</strong> Volume awarded by the operator.</div>
+                        <div><strong>Status:</strong> Activation state for the selected bid.</div>
+                        <div><strong>Important to note:</strong> This is the operational view; ex-post delivery verification is in Settlement.</div>
+                    </div>
+                )}
+            </div>
             <div style={{backgroundColor: '#e6effc', borderLeft: '4px solid #0052cc', padding: '16px 20px', borderRadius: '4px', marginBottom: '32px'}}>
                 <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'8px'}}>
                     <BarChart3 size={20} color="#0052cc" />
@@ -299,3 +344,5 @@ export const FirBidsActivated: React.FC<Props> = ({ onSelectBid, onSelectSPG, on
         </div>
     );
 };
+
+

@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { pocStyles } from '../styles';
-import { Zap, Activity, Shield, Clock, Plus, Filter, Globe, MapPin, TowerControl } from 'lucide-react';
+import { Zap, Activity, Shield, Clock, Plus, Filter, Globe, MapPin, TowerControl, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { svkProducts } from '../mockData';
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
 }
 
 export const FirProductTypeList: React.FC<Props> = ({ onSelect }) => {
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
     return (
         <div style={pocStyles.content}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
@@ -21,6 +22,40 @@ export const FirProductTypeList: React.FC<Props> = ({ onSelect }) => {
                 </button>
             </div>
 
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page lists system services and flexibility products that can be traded via FIS.</div>
+                        <div><strong>Columns in the table:</strong></div>
+                        <div><strong>Name:</strong> Product name (for example mFRR, aFRR, FCR-D).</div>
+                        <div><strong>Market / Operator:</strong> Market domain (TSO or local/DSO) and the responsible operator.</div>
+                        <div><strong>Category:</strong> Product category (for example Frequency or Energy).</div>
+                        <div><strong>Activation:</strong> Activation profile or activation timing for the product.</div>
+                        <div><strong>Description:</strong> Functional description of the product.</div>
+                        <div><strong>Status:</strong> Product availability status in the registry.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', alignItems: 'center'}}>
                 <div style={{display: 'flex', gap: '8px', flex: 1}}>
                     <span style={{...pocStyles.badge, ...pocStyles.badgeBlue}}>TSO Products ({svkProducts.filter(p => p.market.includes('TSO')).length})</span>
@@ -119,3 +154,5 @@ export const FirProductTypeList: React.FC<Props> = ({ onSelect }) => {
         </div>
     );
 };
+
+

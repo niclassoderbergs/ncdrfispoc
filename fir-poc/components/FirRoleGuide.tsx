@@ -19,7 +19,7 @@ const roles = [
     icon: UserPlus,
     color: '#4a148c',
     bg: '#f3e5f5',
-    desc: 'Handles the technical life cycle in FIR, including onboarding, updating, and decommissioning of controllable units (CUs).',
+    desc: 'Handles the technical life cycle in FIS, including onboarding, updating, and decommissioning of controllable units (CUs).',
     isBundle: true
   },
   {
@@ -27,7 +27,7 @@ const roles = [
     icon: ShieldCheck,
     color: '#006d5b',
     bg: '#e6fffa',
-    desc: 'The primary aggregator in FIR. Manages commercial flex-agreements and structures technical resources (CUs) into bidding groups (SPGs).',
+    desc: 'The primary aggregator in FIS. Manages commercial flex-agreements and structures technical resources (CUs) into bidding groups (SPGs).',
     isBundle: true
   },
   {
@@ -50,28 +50,28 @@ const roles = [
     icon: Globe,
     color: '#0052cc',
     bg: '#e6effc',
-    desc: 'Validates market bids against FIR capacity. Receives verified volumes for BSP payment, BRP imbalance adjustment, and RE compensation.'
+    desc: 'Validates market bids against FIS capacity. Receives verified volumes for BSP payment, BRP imbalance adjustment, and RE compensation.'
   },
   {
     title: 'Grid Owner (DSO)',
     icon: TowerControl,
     color: '#4a148c',
     bg: '#f3e5f5',
-    desc: 'Performs grid pre-qualifications and manages grid constraints in FIR. Receives verified delivery data for their local flexibility markets.'
+    desc: 'Performs grid pre-qualifications and manages grid constraints in FIS. Receives verified delivery data for their local flexibility markets.'
   },
   {
     title: 'Retail Entity (RE)',
     icon: Zap,
     color: '#e65100',
     bg: '#fff3e0',
-    desc: 'Electricity supplier for the customer. Receives verified activation data from FIR as a basis for financial compensation.'
+    desc: 'Electricity supplier for the customer. Receives verified activation data from FIS as a basis for financial compensation.'
   },
   {
     title: 'Balance Responsible (BRP)',
     icon: Users,
     color: '#1b5e20',
     bg: '#e8f5e9',
-    desc: 'Responsible for balancing. Receives verified volumes from FIR for neutralization to avoid imbalance costs.'
+    desc: 'Responsible for balancing. Receives verified volumes from FIS for neutralization to avoid imbalance costs.'
   }
 ];
 
@@ -104,7 +104,7 @@ export const FirRoleGuide: React.FC = () => {
               textTransform: 'uppercase', 
               letterSpacing: '1px' 
             }}>
-              Market Roles & FIR Relationships
+              Market Roles & FIS Relationships
             </h3>
         </div>
         <div style={{ 
@@ -178,7 +178,7 @@ export const FirRoleGuide: React.FC = () => {
                   textTransform: 'uppercase', 
                   letterSpacing: '0.5px' 
                 }}>
-                    <Info size={10} /> Relation to FIR
+                    <Info size={10} /> Relation to FIS
                 </div>
                 <p style={{ 
                   margin: 0, 
@@ -195,3 +195,4 @@ export const FirRoleGuide: React.FC = () => {
     </div>
   );
 };
+

@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, Briefcase, Zap, TowerControl, Globe, Users, ChevronLeft, ChevronRight, UserPlus, ShieldCheck } from 'lucide-react';
+import { Search, Filter, Briefcase, Zap, TowerControl, Globe, Users, ChevronLeft, ChevronRight, UserPlus, ShieldCheck, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockDSOs, mockREs, mockBRPs, mockBSPs, mockCUs } from '../mockData';
 
 const PAGE_SIZE = 20;
@@ -22,6 +22,7 @@ const getMockedMWh = (name: string) => {
 export const FirPartiesList: React.FC<Props> = ({ onSelect }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     // Aggregate all unique party names across all registries and sort
     const aggregatedParties = useMemo(() => {
@@ -75,6 +76,48 @@ export const FirPartiesList: React.FC<Props> = ({ onSelect }) => {
                 </div>
             </div>
 
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '8px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page shows actors registered in FIS and which market roles each actor has.</div>
+                        <div><strong>Company Name:</strong> Registered legal entity name. Click the name to open actor details.</div>
+                        <div><strong>Identified Roles:</strong> Role badges detected for the actor in FIS (for example CURR, SP, BSP, DSO, RE, BRP).</div>
+                        <div><strong>Activity (MWh):</strong> Aggregated activity volume shown as an overview indicator.</div>
+                        <div><strong>Country:</strong> Country code for the registered actor.</div>
+                        <div><strong>Status:</strong> Current actor status in the registry.</div>
+                        <div><strong>Role Definitions (below):</strong> The following items describe the different market roles and their responsibilities in FIS.</div>
+                        <div><strong>CU Reg. Responsible (CURR):</strong> Responsible for the technical lifecycle in FIS, including onboarding, updates, and decommissioning of Controllable Units (CUs).</div>
+                        <div><strong>Service Provider (SP):</strong> Acts as the primary aggregator in FIS. This role manages commercial flexibility agreements and structures CUs into Service Provider Groups (SPGs).</div>
+                        <div><strong>Balance Service Provider (BSP):</strong> Required for traceability when an SP sells services from an SPG to the TSO balancing market. Must hold a valid BSP agreement with the TSO.</div>
+                        <div><strong>Datahub (DHV):</strong> Provides relationships, meter values, and technical metering-point data to ensure settlement is assigned to the correct party at each point in time.</div>
+                        <div><strong>System Operator (TSO):</strong> Validates market bids against FIS capacity and receives verified volumes as input for BSP payouts, BRP imbalance adjustments, and RE compensation.</div>
+                        <div><strong>Grid Owner (DSO):</strong> Performs grid prequalification and manages grid constraints in FIS. Receives verified delivery data for local flexibility markets.</div>
+                        <div><strong>Retail Entity (RE):</strong> Electricity supplier for the end customer. Receives verified activation data from FIS as the basis for financial compensation.</div>
+                        <div><strong>Balance Responsible (BRP):</strong> Responsible for balancing. Receives verified volumes from FIS for neutralization to avoid incorrect imbalance costs.</div>
+                        <div><strong>Important About Commercial Collaborations:</strong> One legal entity can operate in multiple roles at the same time. FIS keeps roles separated for traceability while still connecting volumes and responsibilities across the same actor.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', marginBottom: '24px'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -212,3 +255,8 @@ export const FirPartiesList: React.FC<Props> = ({ onSelect }) => {
         </div>
     );
 };
+
+
+
+
+

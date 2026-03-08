@@ -1,8 +1,8 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { pocStyles } from '../styles';
 import { mockCUs, mockSPGs, mockDSOs, mockREs, mockBRPs, mockBSPs, mockSPs, mockRegResponsibles } from '../mockData';
-import { ArrowLeft, ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronRight, ChevronLeft, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 
 // Sub-components
 import { PartyHeader } from './party-roles/PartyHeader';
@@ -55,6 +55,7 @@ const styles = {
 };
 
 export const FirPartyDetail: React.FC<Props> = ({ partyName, prevParty, nextParty, onSelectParty, onBack, onSelectCU, onSelectSPG }) => {
+  const [isHowToExpanded, setIsHowToExpanded] = useState(false);
   // 1. Determine Roles using dedicated registries
   const roles = useMemo(() => {
     const isBSP = mockBSPs.some(s => s.name === partyName);
@@ -130,6 +131,44 @@ export const FirPartyDetail: React.FC<Props> = ({ partyName, prevParty, nextPart
           </div>
       </div>
 
+      <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+        <button
+          type="button"
+          onClick={() => setIsHowToExpanded(prev => !prev)}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer'
+          }}
+        >
+          <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+            <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+            How To Read This Page
+          </h3>
+          {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+        </button>
+        {isHowToExpanded && (
+          <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+            <div>This page compiles information based on the actor's active market roles in FIS. The sections are dynamic and only shown if the actor holds the specific role.</div>
+            <div><strong>Information in each section:</strong></div>
+            <div><strong>Administrative & Technical Identifiers:</strong> Contains basic actor information and technical identifiers.</div>
+            <div><strong>CU Registration Responsible (CURR):</strong> Lists the CUs (Controllable Units) that the actor has registered and is responsible for in this specific role.</div>
+            <div><strong>Service Provider (SP) - Flexibility Agreements:</strong> Shows flexibility agreements and other information linked to the actor's operations as a service provider.</div>
+            <div><strong>Balance Service Provider (BSP) - Market Operations:</strong> Contains information about SPGs (Service Provider Groups), bids, and verified volumes for the TSO balancing market.</div>
+            <div><strong>Service Provider (SP) - DSO Settlement:</strong> Shows SPGs, bids, and verified volumes related to local flexibility markets (DSO).</div>
+            <div><strong>Balance Responsible Party (BRP):</strong> Shows the verified volumes for which the actor will be imbalance-adjusted. The volume is based on activations made in the actor's own SP/BSP role or by other SP/BSP actors.</div>
+            <div><strong>Electricity Supplier (RE) - Compensation Basis:</strong> Shows verified volumes that form the basis for financial compensation for activated flexibility. The volume is based on both own and others' SP/BSP activations.</div>
+            <div><strong>Important to note:</strong></div>
+            <div>The data on this page reflects the role distribution in FIS, where the same legal entity often acts in several roles at the same time (for example, both SP and BSP). Volumes for BRP and RE represent the final net effect for the actor's portfolio regardless of who performed the control action.</div>
+          </div>
+        )}
+      </div>
+
       <PartyHeader partyName={partyName} roles={roles} onBack={onBack} />
 
       <TechnicalDetails isDSO={roles.isDSO} isRE={roles.isRE} />
@@ -180,4 +219,5 @@ export const FirPartyDetail: React.FC<Props> = ({ partyName, prevParty, nextPart
     </div>
   );
 };
+
 

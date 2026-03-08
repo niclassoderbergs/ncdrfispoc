@@ -1,7 +1,7 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, ShieldAlert, Clock, Info, ChevronRight, History } from 'lucide-react';
+import { Search, Filter, ShieldAlert, Clock, Info, ChevronRight, History, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockGridConstraints } from '../mockData';
 import { GridConstraint } from '../types';
 
@@ -10,6 +10,7 @@ interface Props {
 }
 
 export const FirGridConstraintsList: React.FC<Props> = ({ onSelect }) => {
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
     const { activeAndPlanned, expired } = useMemo(() => {
         return {
             activeAndPlanned: mockGridConstraints.filter(gc => gc.status !== 'Expired'),
@@ -104,7 +105,41 @@ export const FirGridConstraintsList: React.FC<Props> = ({ onSelect }) => {
                     <p style={{color: '#6b778c', fontSize: '0.9rem'}}>Active and planned restrictions registered by System Operators.</p>
                 </div>
             </div>
-
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This view lists temporary grid constraints in two sections: current/planned constraints and historical (expired) constraints.</div>
+                        <div><strong>Columns in the table:</strong></div>
+                        <div><strong>ID:</strong> Unique constraint identifier.</div>
+                        <div><strong>System Operator:</strong> Operator/grid owner that registered the constraint.</div>
+                        <div><strong>Limit:</strong> Allowed limit value and unit during the active period.</div>
+                        <div><strong>Period:</strong> Start and end timestamps for the constraint window.</div>
+                        <div><strong>Status:</strong> Current state (Active, Planned, or Expired).</div>
+                        <div><strong>Affected Units:</strong> Number of affected units linked to the constraint.</div>
+                        <div><strong>Action:</strong> Open the row to inspect full constraint details.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '32px'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -149,3 +184,5 @@ export const FirGridConstraintsList: React.FC<Props> = ({ onSelect }) => {
         </div>
     );
 };
+
+

@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   Briefcase,
   ClipboardList,
+  FileText,
   Package,
   LineChart,
   FileBarChart,
@@ -233,7 +234,7 @@ export const FirDashboard: React.FC<Props> = ({ onNavigate }) => {
                         <Globe size={24} />
                     </div>
                     <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: '#172b4d' }}>
-                        Welcome to FIR POC – The Future Flexibility Register
+                        Welcome to FIS POC – The Future Flexibility Register
                     </h2>
                 </div>
 
@@ -293,7 +294,7 @@ export const FirDashboard: React.FC<Props> = ({ onNavigate }) => {
                     }}>
                         <ZapOff size={24} color="#666" style={{ flexShrink: 0, marginTop: '2px' }} />
                         <div style={{ fontSize: '0.85rem', lineHeight: '1.5', color: '#444' }}>
-                            <strong>LOCAL FLEXIBILITY MARKETS NOTE:</strong> Local DSO-level flexibility markets are integrated in this POC. You can view products and market definitions under <strong>Local Markets</strong>. FIR ensures that resources and bids from local markets do not conflict with transmission-level balancing or grid security.
+                            <strong>LOCAL FLEXIBILITY MARKETS NOTE:</strong> Local DSO-level flexibility markets are integrated in this POC. You can view products and market definitions under <strong>Local Markets</strong>. FIS ensures that resources and bids from local markets do not conflict with transmission-level balancing or grid security.
                         </div>
                     </div>
                 </div>
@@ -310,6 +311,37 @@ export const FirDashboard: React.FC<Props> = ({ onNavigate }) => {
 
             {/* NEW ROLE GUIDE SECTION */}
             <FirRoleGuide />
+
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd'}}>
+                <h3 style={{...pocStyles.sectionTitle, marginBottom: '16px'}}>
+                    <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                    How To Read This POC: Basic Resources
+                </h3>
+                <p style={{fontSize: '0.9rem', color: '#42526e', lineHeight: '1.6', marginTop: 0}}>
+                    This section focuses on the individual resources and groups that provide flexibility.
+                </p>
+
+                <div style={{fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.6'}}>
+                    <p style={{marginBottom: '8px'}}><strong>Controllable Units (CU)</strong></p>
+                    <ul style={{marginTop: 0, marginBottom: '16px', paddingLeft: '20px'}}>
+                        <li>The top table shows registered CUs that have active flexibility agreements with an SP.</li>
+                        <li>The bottom table shows CUs that do not yet have an agreement.</li>
+                    </ul>
+
+                    <p style={{marginBottom: '8px'}}><strong>CU Details (click ID)</strong></p>
+                    <ul style={{marginTop: 0, marginBottom: 0, paddingLeft: '20px', display: 'grid', gap: '6px'}}>
+                        <li><strong>Operational Alerts & Current Constraints:</strong> Shows active or upcoming temporary grid constraints registered by the grid owner.</li>
+                        <li><strong>Overview:</strong> Selected statuses such as flexibility agreement, grid prequalification, TSO SPG, and DSO SPG.</li>
+                        <li><strong>Market Product Qualifications:</strong> Qualified products for the SPG that the CU belongs to.</li>
+                        <li><strong>DHV Relations:</strong> Shows relationships for the underlying metering point/facility (from the data handling tool). Used for correct imbalance adjustment and compensation. Updated automatically when the delivery structure changes, for example when switching electricity supplier.</li>
+                        <li><strong>Flexibility Relations:</strong> Shows CURR (the party that registered the resource) and SP (the party holding the flexibility agreement). Personal/organization ID is used to verify that this is the same customer across grid, energy supply, and flexibility agreements.</li>
+                        <li><strong>Technical Identity & Base Qualification:</strong> Technical properties for the CU and underlying metering point/facility (retrieved from DHV).</li>
+                        <li><strong>Baseline & Compliance:</strong> Qualified products for the CU�s SPG and which baseline methods the SP selected for each product.</li>
+                        <li><strong>Recent Verifications (Ex-post):</strong> Shows the most recent activated bids in which the CU participated.</li>
+                        <li><strong>Relationship History:</strong> History of DHV and Flexibility relationships. Used for traceability and correct corrections/adjustments.</li>
+                    </ul>
+                </div>
+            </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px' }}>
                 <div>
@@ -634,6 +666,11 @@ const styles = {
         marginBottom: '12px'
     }
 };
+
+
+
+
+
 
 
 

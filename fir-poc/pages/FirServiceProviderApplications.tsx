@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, Plus, Clock, AlertTriangle, CheckCircle2, FileX } from 'lucide-react';
+import { Search, Filter, Plus, Clock, AlertTriangle, CheckCircle2, FileX, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockSPApplications } from '../mockData';
 
 export const FirServiceProviderApplications: React.FC = () => {
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'Active':
@@ -31,6 +32,45 @@ export const FirServiceProviderApplications: React.FC = () => {
                 </button>
             </div>
 
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '6px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This view shows the onboarding queue for new market actors (Service Providers and Balance Service Providers) that want to connect to FIS.</div>
+                        <div><strong>Application Routing:</strong> Each application is sent to the relevant DSO/TSO that the SP/BSP is applying to.</div>
+                        <div><strong>Application ID:</strong> Unique application reference for each onboarding case.</div>
+                        <div><strong>Company Name:</strong> Name of the applying company. The organization number is shown below the name in the same column.</div>
+                        <div><strong>Type:</strong> Indicates whether the application is for Service Provider (SP), Balance Service Provider (BSP), or a combined role.</div>
+                        <div><strong>Applied Date:</strong> Date when the application was submitted.</div>
+                        <div><strong>Status:</strong> Current processing state.</div>
+                        <div><strong>Review:</strong> The application is currently under internal review.</div>
+                        <div><strong>Pending Documents:</strong> Additional documentation is required from the applicant.</div>
+                        <div><strong>Rejected:</strong> The application has been rejected.</div>
+                        <div><strong>Active:</strong> The actor is approved and has an active profile in the system.</div>
+                        <div><strong>Action:</strong> Opens the next workflow step, for example <strong>Process</strong> or <strong>View Profile</strong>.</div>
+                        <div><strong>System Role:</strong> FIS (Flexibility Information System) coordinates and tracks application status. Administrative processing may happen in external systems, but FIS is the central source for actor status and market permissions.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', alignItems: 'center'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -111,3 +151,8 @@ export const FirServiceProviderApplications: React.FC = () => {
         </div>
     );
 };
+
+
+
+
+

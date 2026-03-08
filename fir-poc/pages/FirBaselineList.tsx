@@ -1,10 +1,25 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { pocStyles } from '../styles';
-import { TrendingUp, Info, CheckCircle2, Zap, Clock } from 'lucide-react';
+import { TrendingUp, Info, CheckCircle2, Zap, Clock, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { baselineMethods } from '../mockData';
 
 export const FirBaselineList: React.FC = () => {
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
+
+    const getMeterSource = (methodId: string) => {
+        switch (methodId) {
+            case 'BM-001':
+                return 'MP';
+            case 'BM-002':
+                return 'CU';
+            case 'BM-003':
+            case 'BM-004':
+                return 'MP/CU';
+            default:
+                return 'MP/CU';
+        }
+    };
     return (
         <div style={pocStyles.content}>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
@@ -14,6 +29,39 @@ export const FirBaselineList: React.FC = () => {
                 </div>
             </div>
 
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This view shows approved baseline methods used to calculate what a resource would have consumed or produced if activation had not occurred.</div>
+                        <div><strong>Columns in the table:</strong></div>
+                        <div><strong>Method Name:</strong> The baseline method name and method ID.</div>
+                        <div><strong>Description:</strong> A short explanation of how the method calculates the reference value.</div>
+                        <div><strong>Meter Source:</strong> Indicates whether the method uses metering data from CU, MP, or MP/CU.</div>
+                        <div><strong>Approved Products:</strong> Market products for which the method is approved.</div>
+                        <div><strong>Status:</strong> Approval state of the baseline method.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '20px', backgroundColor: '#f0f7ff', border: '1px solid #cce4ff', display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '32px'}}>
                 <Info size={24} color="#0052cc" style={{flexShrink: 0, marginTop: '2px'}} />
                 <div>
@@ -29,10 +77,11 @@ export const FirBaselineList: React.FC = () => {
                 <table style={pocStyles.table}>
                     <thead style={{backgroundColor: '#fafbfc'}}>
                         <tr>
-                            <th style={{...pocStyles.th, width: '25%'}}>Method Name</th>
-                            <th style={{...pocStyles.th, width: '35%'}}>Description</th>
-                            <th style={{...pocStyles.th, width: '25%'}}>Approved Products</th>
-                            <th style={{...pocStyles.th, width: '15%'}}>Status</th>
+                            <th style={{...pocStyles.th, width: '22%'}}>Method Name</th>
+                            <th style={{...pocStyles.th, width: '30%'}}>Description</th>
+                            <th style={{...pocStyles.th, width: '12%'}}>Meter Source</th>
+                            <th style={{...pocStyles.th, width: '24%'}}>Approved Products</th>
+                            <th style={{...pocStyles.th, width: '12%'}}>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,6 +98,11 @@ export const FirBaselineList: React.FC = () => {
                                 </td>
                                 <td style={{...pocStyles.td, fontSize: '0.85rem', color: '#42526e', lineHeight: '1.4'}}>
                                     {method.description}
+                                </td>
+                                <td style={{...pocStyles.td, verticalAlign: 'top'}}>
+                                    <span style={{...pocStyles.badge, backgroundColor: '#f4f5f7', color: '#42526e'}}>
+                                        {getMeterSource(method.id)}
+                                    </span>
                                 </td>
                                 <td style={{...pocStyles.td, verticalAlign: 'top'}}>
                                     <div style={{display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
@@ -84,3 +138,4 @@ export const FirBaselineList: React.FC = () => {
         </div>
     );
 };
+

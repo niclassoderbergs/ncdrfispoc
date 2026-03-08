@@ -105,7 +105,7 @@ export const SpAgreementView: React.FC<Props> = ({ partyName, onSelectCU }) => {
             <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#e6effc', borderRadius: '8px', border: '1px solid #b3d4ff', display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <Info size={18} color="#0052cc" />
                 <p style={{ fontSize: '0.85rem', color: '#172b4d', margin: 0 }}>
-                    <strong>Flexibility Agreements</strong> grant the Service Provider the legal right to aggregate and trade the technical capacity of a Controllable Unit. FIR validates these against <strong>Grid Contracts in Datahub (DHV)</strong> to ensure customer rights.
+                    <strong>Flexibility Agreements</strong> grant the Service Provider the legal right to aggregate and trade the technical capacity of a Controllable Unit. FIS validates these against <strong>Grid Contracts in Datahub (DHV)</strong> to ensure customer rights.
                 </p>
             </div>
 

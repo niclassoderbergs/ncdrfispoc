@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, Plus, Link2, ExternalLink, Info, ChevronLeft, ChevronRight, ShieldAlert, AlertTriangle } from 'lucide-react';
+import { Search, Filter, Plus, Link2, ExternalLink, FileText, ChevronLeft, ChevronRight, ShieldAlert, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockCUs, mockSPGs } from '../mockData';
 
 const PAGE_SIZE = 20;
@@ -39,6 +39,7 @@ export const FirCUList: React.FC<Props> = ({ onSelect, onSelectSPG, onSelectPart
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
     const [unassignedPage, setUnassignedPage] = useState(0);
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     const filteredCUs = useMemo(() => {
         const lower = searchTerm.toLowerCase();
@@ -78,13 +79,45 @@ export const FirCUList: React.FC<Props> = ({ onSelect, onSelectSPG, onSelectPart
                 </button>
             </div>
 
-            <div style={{backgroundColor: '#e6effc', padding: '12px 16px', borderRadius: '6px', marginBottom: '24px', border: '1px solid #b3d4ff', display: 'flex', alignItems: 'center', gap: '12px'}}>
-                <Info size={18} color="#0052cc" />
-                <span style={{fontSize: '0.9rem', color: '#0747a6'}}>
-                    Managing <strong>{mockCUs.length.toLocaleString()}</strong> resources. Navigating at {PAGE_SIZE} units per page.
-                </span>
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        
+                        <div>This view provides a consolidated overview of all technical resources (Controllable Units) in FIS. The page is divided into two main sections to separate resources that are market-ready from those that require action.</div>
+                        <div><strong>Information in the main list:</strong></div>
+                        <div><strong>ID & Name:</strong> Unique identifiers for the technical unit.</div>
+                        <div><strong>Type & Capacity:</strong> Describes the resource's technical characteristics, such as technology type and installed capacity (for example, MW).</div>
+                        <div><strong>Group (SPG):</strong> Shows which bidding group (Service Provider Group) the resource belongs to. If the field is empty ("None"), the resource is not yet part of a commercial grouping.</div>
+                        <div><strong>Status:</strong> Indicates the resource's operational state (for example, Active, Pending, or Inactive).</div>
+                        <div><strong>SP (Service Provider):</strong> The party with commercial responsibility for the resource. If a resource has no SP, it is marked with a warning ("NO SP").</div>
+                        <div><strong>Section: Action Required (Resources Lacking Service Provider)</strong></div>
+                        <div>At the bottom of the page, resources without a linked Service Provider are listed. Additional control information is shown for these:</div>
+                        <div><strong>Grid Owner:</strong> Which grid owner (DSO) the resource is connected to.</div>
+                        <div><strong>Registration Responsible:</strong> The actor (CURR) that registered the unit and is responsible for its technical master data.</div>
+                        <div><strong>Status (Unlinked):</strong> These units are technically registered but cannot participate in market trading until a commercial agreement with an SP has been established in FIS.</div>
+                    </div>
+                )}
             </div>
-
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', marginBottom: '16px'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -313,3 +346,7 @@ export const FirCUList: React.FC<Props> = ({ onSelect, onSelectSPG, onSelectPart
         </div>
     );
 };
+
+
+
+

@@ -1,5 +1,5 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { pocStyles } from '../styles';
 import { 
   ArrowLeft, 
@@ -14,7 +14,10 @@ import {
   CheckCircle2,
   AlertCircle,
   Clock,
-  Coins
+  Coins,
+  FileText,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { mockLocalMarkets, mockDSOs } from '../mockData';
 
@@ -78,6 +81,7 @@ const styles = {
 };
 
 export const FirLocalMarketDetail: React.FC<Props> = ({ id, onBack }) => {
+  const [isHowToExpanded, setIsHowToExpanded] = useState(false);
   const market = useMemo(() => mockLocalMarkets.find(m => m.id === id), [id]);
 
   const validMGAs = useMemo(() => {
@@ -118,6 +122,40 @@ export const FirLocalMarketDetail: React.FC<Props> = ({ id, onBack }) => {
           </div>
         </div>
         <button style={{ ...pocStyles.actionButton, backgroundColor: '#0052cc' }}>Open Market Dashboard</button>
+      </div>
+
+      <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+        <button
+          type="button"
+          onClick={() => setIsHowToExpanded(prev => !prev)}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer'
+          }}
+        >
+          <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+            <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+            How To Read This Page
+          </h3>
+          {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+        </button>
+        {isHowToExpanded && (
+          <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+            <div>This page provides an overview of the selected local flexibility market and its technical/commercial setup.</div>
+            <div><strong>Market Description:</strong> Introduction to the market and how it is intended to be used.</div>
+            <div><strong>Available Products:</strong> Product types, time horizon, remuneration model, and qualification criteria.</div>
+            <div><strong>Market Statistics:</strong> Snapshot of eligible resources, potential volume, and connected service providers.</div>
+            <div><strong>Valid Grid Areas (MGA):</strong> Geographic areas where this market applies and where resources can participate.</div>
+            <div><strong>Technical Constraints:</strong> Core operational rules such as minimum bid size, gate closure, and settlement/quantification domains.</div>
+            <div><strong>Cross-Market Rule:</strong> Prevents double activation/payment conflicts between local and TSO markets.</div>
+          </div>
+        )}
       </div>
 
       {/* Participation Requirements */}
@@ -223,7 +261,7 @@ export const FirLocalMarketDetail: React.FC<Props> = ({ id, onBack }) => {
                 <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#172b4d', marginBottom: '12px' }}>Technical Constraints</h4>
                 <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', color: '#42526e', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <li>Settlement via <strong>DHV Domain 7</strong></li>
-                    <li>Quantification via <strong>FIR Domain 6</strong></li>
+                    <li>Quantification via <strong>FIS Domain 6</strong></li>
                     <li>Minimum bid size: <strong>0.1 MW</strong></li>
                     <li>Gate Closure: <strong>D-1 12:00 CET</strong></li>
                 </ul>
@@ -243,3 +281,5 @@ export const FirLocalMarketDetail: React.FC<Props> = ({ id, onBack }) => {
     </div>
   );
 };
+
+

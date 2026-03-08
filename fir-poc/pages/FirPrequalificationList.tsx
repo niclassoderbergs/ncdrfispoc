@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { pocStyles } from '../styles';
-import { Search, Filter, Plus, Clock, CheckCircle2, MapPin, Box, Info, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Filter, Plus, Clock, CheckCircle2, MapPin, Box, Info, ChevronLeft, ChevronRight, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { mockCUs } from '../mockData';
 
 const PAGE_SIZE = 20;
@@ -23,6 +23,7 @@ const styles = {
 export const FirPrequalificationList: React.FC<Props> = ({ onSelect }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
 
     const pendingCUs = useMemo(() => mockCUs.filter(cu => cu.status === 'Pending'), []);
     const approvedCUs = useMemo(() => mockCUs.filter(cu => cu.status === 'Active'), []); 
@@ -59,7 +60,41 @@ export const FirPrequalificationList: React.FC<Props> = ({ onSelect }) => {
                     <Plus size={16} /> New Request
                 </button>
             </div>
-
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '10px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This view manages base technical authorization from DSOs before a resource can participate in markets.</div>
+                        <div><strong>Columns in the table:</strong></div>
+                        <div><strong>CU ID:</strong> Unique Controllable Unit identifier for the request.</div>
+                        <div><strong>Resource Name:</strong> Name of the resource under review.</div>
+                        <div><strong>Grid Area:</strong> Grid area where the resource is connected.</div>
+                        <div><strong>DSO (Auditor):</strong> Grid owner responsible for assessing the request.</div>
+                        <div><strong>Prequalification Status:</strong> Current review state (for example Pending Assessment or Technical Approved).</div>
+                        <div><strong>Action:</strong> Open review workflow for the selected request.</div>
+                        <div><strong>Business rule:</strong> Only technically approved resources are eligible for inclusion in an SPG.</div>
+                    </div>
+                )}
+            </div>
             <div style={{...pocStyles.section, padding: '16px', display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '32px'}}>
                 <div style={{position: 'relative', flex: 1}}>
                     <Search size={18} style={{position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6b778c'}} />
@@ -209,3 +244,5 @@ export const FirPrequalificationList: React.FC<Props> = ({ onSelect }) => {
         </div>
     );
 };
+
+

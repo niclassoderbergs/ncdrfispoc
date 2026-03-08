@@ -1,5 +1,5 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { 
   ChevronRight, 
   ShieldAlert, 
@@ -11,7 +11,10 @@ import {
   Zap,
   Info,
   Link2,
-  ChevronLeft
+  ChevronLeft,
+  FileText,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { pocStyles } from '../styles';
 import { mockGridConstraints, mockCUs, mockSPGs } from '../mockData';
@@ -106,6 +109,7 @@ const styles = {
 };
 
 export const FirGridConstraintDetail: React.FC<Props> = ({ id, prevConstraint, nextConstraint, onSelectConstraint, onBack, onSelectCU, onSelectSPG }) => {
+    const [isHowToExpanded, setIsHowToExpanded] = useState(false);
     const constraint = mockGridConstraints.find(gc => gc.id === id);
     
     const affectedCUs = useMemo(() => {
@@ -176,6 +180,45 @@ export const FirGridConstraintDetail: React.FC<Props> = ({ id, prevConstraint, n
                 </div>
             </div>
 
+
+            <div style={{...pocStyles.section, backgroundColor: '#f8fafd', marginBottom: '16px'}}>
+                <button
+                    type="button"
+                    onClick={() => setIsHowToExpanded(prev => !prev)}
+                    style={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer'
+                    }}
+                >
+                    <h3 style={{...pocStyles.sectionTitle, marginBottom: 0}}>
+                        <FileText size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />
+                        How To Read This Page
+                    </h3>
+                    {isHowToExpanded ? <ChevronUp size={18} color="#42526e" /> : <ChevronDown size={18} color="#42526e" />}
+                </button>
+                {isHowToExpanded && (
+                    <div style={{display: 'grid', gap: '6px', fontSize: '0.9rem', color: '#172b4d', lineHeight: '1.55', marginTop: '14px'}}>
+                        <div>This page shows one temporary grid constraint and how it impacts affected portfolios (SPGs) and units (CUs).</div>
+                        <div><strong>Header:</strong> Constraint ID, status, reason, limit, and active period.</div>
+                        <div><strong>Stat Cards:</strong> Total Affected Units, Affected Portfolios, and DSO (Reporter).</div>
+                        <div><strong>Affected Service Providing Groups table:</strong></div>
+                        <div><strong>SPG ID / Name:</strong> Portfolio identifier and name. Click to open SPG details.</div>
+                        <div><strong>Actor:</strong> Owning/operating actor for the portfolio.</div>
+                        <div><strong>Brutto (MW):</strong> Total portfolio capacity before the constraint.</div>
+                        <div><strong>Netto (MW):</strong> Remaining portfolio capacity during the constraint window.</div>
+                        <div><strong>Impact Visualization:</strong> Visual split between remaining net capacity and blocked capacity.</div>
+                        <div><strong>Directly Affected Units table:</strong></div>
+                        <div><strong>CU ID:</strong> Affected unit ID. Click to open CU details.</div>
+                        <div><strong>Name / Type / Capacity / Retailer (RE):</strong> Unit identity and key attributes used for impact and settlement context.</div>
+                    </div>
+                )}
+            </div>
             <div style={styles.vulnerabilityBox}>
                 <div style={{backgroundColor: '#ff4d4f', padding: '16px', borderRadius: '12px', color: 'white'}}>
                     <ShieldAlert size={32} />
@@ -316,3 +359,7 @@ export const FirGridConstraintDetail: React.FC<Props> = ({ id, prevConstraint, n
         </div>
     );
 };
+
+
+
+
